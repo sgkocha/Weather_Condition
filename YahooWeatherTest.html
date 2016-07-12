@@ -1,0 +1,258 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+   <script >
+      var forecast_weather = []; 
+      var dates = [];
+      var current_temp = [];
+      var windes = [];
+      var descriptions = [];
+
+      var callbackFunction = function(data) 
+      {
+        console.log (data.query.results.channel.lastBuildDate);
+        dates.push(data.query.results.channel.lastBuildDate);
+        current_temp.push(data.query.results.channel.item.condition.temp);
+        forecast_weather.push(data.query.results.channel.item.forecast);
+        windes.push(data.query.results.channel.wind);
+        descriptions.push(data.query.results.channel.description);
+      };
+
+   </script>
+   <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Dubai%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=callbackFunction"></script>
+
+ <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Cairo%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=callbackFunction"></script>
+
+ <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Kiev%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=callbackFunction"></script>
+
+  <script src="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Lviv%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=callbackFunction"></script>
+</head>
+
+<body  align = "center" bgcolor = "wheat">
+ 	  <select id = "cities" size = "1">
+        <option value = "Dubai"> Dubai</option>
+        <option value = "Cairo">Cairo</option>
+        <option selected value = "Kiev">Kiev</option>
+        <option value = "L'viv">L'viv</option>
+    </select>
+    
+
+  <script src="weather_condition.js"></script>
+
+ <script>
+   var img_url, str;
+   
+   var d = document.createElement('h4');
+   d.setAttribute('id','date');
+   d.innerHTML = dates[document.getElementById("cities").selectedIndex];
+   document.body.appendChild(d);
+
+   var t = document.createElement('h4');
+   t.setAttribute('id','title');
+   t.innerHTML = descriptions[document.getElementById("cities").selectedIndex];
+   document.body.appendChild(t);
+
+   var city_img = document.createElement('img');
+   city_img.setAttribute('id','city');
+   city_img.setAttribute('width','440');
+   city_img.setAttribute('heght','280'); 
+   var city_url = 'city/Kyiv.jpg'; 
+  
+  
+   city_img.setAttribute('src', city_url);
+   document.body.appendChild(city_img);
+
+   var ct = document.createElement('h4');
+   ct.setAttribute('id','ct');
+   ct.innerHTML = Math.round((current_temp[document.getElementById("cities").selectedIndex] -32) / 1.8) + "°";
+   document.body.appendChild(ct);
+
+   var w = document.createElement('h4');
+   w.setAttribute('id','w');
+   w.innerHTML = "Wind" +" - " + windes[document.getElementById("cities").selectedIndex].speed + " km/h";
+   document.body.appendChild(w);
+   
+   var tempHigh;
+   var tempLow;
+
+   var newElem=document.createElement('table');
+   newElem.setAttribute('id','tl');
+   newElem.setAttribute('width','500');
+   newElem.setAttribute('border','1');
+   newElem.setAttribute('align','center');
+
+   var newRow=newElem.insertRow(0);
+   var newCell1 = newRow.insertCell(0);
+   newCell1.width="400";
+   newCell1.innerHTML= forecast_weather[document.getElementById("cities").selectedIndex][0].date;
+   var newCell2 = newRow.insertCell(1);
+   newCell2.width="200";
+   tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][0].high - 32) / 1.8 );
+   tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][0].low - 32) / 1.8 );
+   newCell2.innerHTML = "<b>" + tempHigh + "°</b>";
+   var newCell3 = newRow.insertCell(2);
+   newCell3.width="200";
+   newCell3.innerHTML = tempLow + "°";
+   var newCell4 = newRow.insertCell(3);
+   newCell4.width="400";
+   var code =  + forecast_weather[document.getElementById("cities").selectedIndex][0].code;
+   var str = GetConditionText(code);
+   img_url = GetImg(str);
+   newCell4.innerHTML = img_url;
+
+   var newRow=newElem.insertRow(1);
+   var newCell5 = newRow.insertCell(0);
+   newCell5.width="400";
+   newCell5.innerHTML= forecast_weather[document.getElementById("cities").selectedIndex][1].date;
+   var newCell6 = newRow.insertCell(1);
+   newCell6.width="200";
+   tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][1].high - 32) / 1.8 );
+   tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][1].low - 32) / 1.8 );
+   newCell6.innerHTML= "<b>" + tempHigh + "°</b>";
+   var newCell7 = newRow.insertCell(2);
+   newCell7.width="200";
+   newCell7.innerHTML = tempLow + "°";
+   var newCell8 = newRow.insertCell(3);
+   newCell8.width="400";
+   code =  + forecast_weather[document.getElementById("cities").selectedIndex][1].code;
+   str = GetConditionText(code);
+   img_url = GetImg(str);
+   newCell8.innerHTML = img_url;
+
+   var newRow=newElem.insertRow(2);
+   var newCell9 = newRow.insertCell(0);
+   newCell9.width="400";
+   newCell9.innerHTML= forecast_weather[document.getElementById("cities").selectedIndex][2].date;
+   var newCell10 = newRow.insertCell(1);
+   newCell10.width="200";
+   tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][2].high - 32) / 1.8 );
+   tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][2].low - 32) / 1.8 );
+   newCell10.innerHTML= "<b>" + tempHigh + "°</b>";
+   var newCell11 = newRow.insertCell(2);
+   newCell11.width="200";
+   newCell11.innerHTML = tempLow + "°";
+   var newCell12 = newRow.insertCell(3);
+   newCell12.width="400";
+   code =  + forecast_weather[document.getElementById("cities").selectedIndex][2].code;
+   str = GetConditionText(code);
+   img_url = GetImg(str);
+   newCell12.innerHTML = img_url;
+
+   var newRow=newElem.insertRow(3);
+   var newCell13 = newRow.insertCell(0);
+   newCell13.width="400";
+   newCell13.innerHTML= forecast_weather[document.getElementById("cities").selectedIndex][3].date;
+   var newCell14 = newRow.insertCell(1);
+   newCell14.width="200";
+   tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][3].high - 32) / 1.8 );
+   tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][3].low - 32) / 1.8 );
+   newCell14.innerHTML= "<b>" + tempHigh + "°</b>";
+   var newCell15 = newRow.insertCell(2);
+   newCell15.width="200";
+   newCell15.innerHTML = tempLow + "°";
+   var newCell16 = newRow.insertCell(3);
+   newCell16.width="400";
+   code =  + forecast_weather[document.getElementById("cities").selectedIndex][3].code;
+   str = GetConditionText(code);
+   img_url = GetImg(str);
+   newCell16.innerHTML = img_url;
+
+   var newRow=newElem.insertRow(4);
+   var newCell17 = newRow.insertCell(0);
+   newCell17.width="400";
+   newCell17.innerHTML= forecast_weather[document.getElementById("cities").selectedIndex][4].date;
+   var newCell18 = newRow.insertCell(1);
+   newCell18.width="200";
+   tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][4].high - 32) / 1.8 );
+   tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][4].low - 32) / 1.8 );
+   newCell18.innerHTML= "<b>" + tempHigh + "°</b>";
+   var newCell19 = newRow.insertCell(2);
+   newCell19.width="200";
+   newCell19.innerHTML = tempLow + "°";
+   var newCell20= newRow.insertCell(3);
+   newCell20.width="400";
+   code =  + forecast_weather[document.getElementById("cities").selectedIndex][4].code;
+   str = GetConditionText(code);
+   img_url = GetImg(str);
+   newCell20.innerHTML = img_url;
+
+   document.body.appendChild(newElem);
+
+   document.getElementById("cities").onchange = function () 
+   { 
+     d.innerHTML = dates[document.getElementById("cities").selectedIndex];
+     t.innerHTML = descriptions[document.getElementById("cities").selectedIndex];
+
+     switch (document.getElementById("cities").selectedIndex)
+     {
+       case 0:
+              city_url = 'City/Dubai.jpg';
+              break;
+       case 1:
+             city_url = 'City/Cairo.jpg';
+             break; 
+       case 2:
+              city_url = 'City/Kyiv.jpg';
+              break;
+        case 3:
+              city_url = "City/L'viv.jpg";
+              break;
+      } 
+     city_img.setAttribute('src', city_url);
+
+     ct.innerHTML = Math.round((current_temp[document.getElementById("cities").selectedIndex] -32) / 1.8) + "°";
+     w.innerHTML = "Wind" +" - " + windes[document.getElementById("cities").selectedIndex].speed + " km/h";
+
+     tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][0].high - 32) / 1.8 );
+     tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][0].low - 32) / 1.8 );
+     newCell2.innerHTML = "<b>" + tempHigh + "°</b>";
+     newCell3.innerHTML = tempLow + "°";
+     code =  + forecast_weather[document.getElementById("cities").selectedIndex][0].code;
+     str = GetConditionText(code);
+     img_url = GetImg(str);
+     newCell4.innerHTML = img_url;
+
+     tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][1].high - 32) / 1.8 );
+     tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][1].low - 32) / 1.8 );
+     newCell6.innerHTML= "<b>" + tempHigh + "°</b>";
+     newCell7.innerHTML = tempLow + "°";
+     code =  + forecast_weather[document.getElementById("cities").selectedIndex][1].code;
+     str = GetConditionText(code);
+     img_url = GetImg(str);
+     newCell8.innerHTML = img_url;
+
+     tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][2].high - 32) / 1.8 );
+     tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][2].low - 32) / 1.8 );
+     newCell10.innerHTML= "<b>" + tempHigh + "°</b>";
+     newCell11.innerHTML = tempLow + "°";
+     code =  + forecast_weather[document.getElementById("cities").selectedIndex][2].code;
+     str = GetConditionText(code);
+     img_url = GetImg(str);
+     newCell12.innerHTML = img_url;
+
+     tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][3].high - 32) / 1.8 );
+     tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][3].low - 32) / 1.8 );
+     newCell14.innerHTML= "<b>" + tempHigh + "°</b>";
+     newCell15.innerHTML = tempLow + "°";
+     code =  + forecast_weather[document.getElementById("cities").selectedIndex][3].code;
+     str = GetConditionText(code);
+     img_url = GetImg(str);
+     newCell16.innerHTML = img_url;
+
+     tempHigh = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][4].high - 32) / 1.8 );
+     tempLow = Math.round((forecast_weather[document.getElementById("cities").selectedIndex][4].low - 32) / 1.8 );
+     newCell18.innerHTML= "<b>" + tempHigh + "°</b>";
+     newCell19.innerHTML = tempLow + "°";
+     code =  + forecast_weather[document.getElementById("cities").selectedIndex][4].code;
+     str = GetConditionText(code);
+     img_url = GetImg(str);
+     newCell20.innerHTML = img_url;
+   }
+
+</script>
+
+</body>
+
+</html>
